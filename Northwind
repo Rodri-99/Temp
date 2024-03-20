@@ -1,0 +1,88 @@
+--
+-- PostgreSQL database dump complete
+--
+SELECT * 
+FROM customers;
+
+SELECT COUNTRY
+FROM customers;
+
+SELECT * 
+FROM customers 
+WHERE customer_id LIKE 'BL%';
+
+SELECT *
+FROM orders
+LIMIT 100;
+
+SELECT *
+FROM orders 
+WHERE ship_postal_code IN ('1010', '3012', '12209', '05023');
+
+SELECT *
+FROM orders
+WHERE ship_region IS NOT NULL;
+
+SELECT *
+FROM orders
+ORDER BY ship_country, ship_city;
+
+INSERT INTO customers (customer_id, company_name, contact_name, contact_title, address, city, region, postal_code, country, phone, fax)
+VALUES ('APLNC','autobell','Rodrigo Zega','manager', 'Peaks dr', 'Charlotte', 'NC', 'USA','28215', '980-200-0221', '(980)200-200');
+
+UPDATE orders
+SET ship_region = 'EuroZone'
+WHERE ship_country = 'France';
+
+DELETE FROM order_details
+WHERE quantity = 1;
+
+SELECT AVG(quantity) AS average_quantity, 
+       MAX(quantity) AS max_quantity, 
+       MIN(quantity) AS min_quantity
+FROM order_details;
+
+SELECT order_id, 
+       AVG(quantity) AS average_quantity, 
+       MAX(quantity) AS max_quantity, 
+       MIN(quantity) AS min_quantity
+FROM order_details
+GROUP BY order_id;
+
+SELECT customer_id
+FROM orders
+WHERE order_id = 10290;
+
+SELECT *
+FROM orders
+INNER JOIN customers ON orders.customer_id = customers.customer_id;
+SELECT *
+FROM orders
+LEFT JOIN customers ON orders.customer_id = customers.customer_id;
+SELECT *
+FROM orders
+RIGHT JOIN customers ON orders.customer_id = customers.customer_id;
+
+SELECT o.ship_city, o.ship_country
+FROM orders o
+JOIN employees e ON o.employee_id = e.employee_id
+JOIN customers c ON o.customer_id = c.customer_id
+WHERE e.city = 'London';
+
+SELECT DISTINCT o.ship_name
+FROM orders o
+JOIN order_details od ON o.order_id = od.order_id
+JOIN products p ON od.product_id = p.product_id
+WHERE p.discontinued = 1;
+
+SELECT e1.first_name
+FROM employees e1
+LEFT JOIN employees e2 ON e1.reports_to = e2.employee_id
+WHERE e2.employee_id IS NULL;
+
+SELECT e1.first_name
+FROM employees e1
+JOIN employees e2 ON e1.reports_to = e2.employee_id
+WHERE e2.first_name = 'Andrew';
+
+CREATE INDEX idx_customer_id ON orders(customer_id);
